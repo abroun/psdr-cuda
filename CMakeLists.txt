@@ -31,6 +31,7 @@ else()
     if ( NOT PYTHON_INCLUDE_PATH )
         message(FATAL_ERROR "PYTHON_INCLUDE_PATH not set!")
     endif()
+    #set(PYBIND11_ROOT /deps/enoki/ext/pybind11)
 endif()
 
 set(PSDR_CUDA_FILE psdr_cuda)
@@ -54,7 +55,7 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
 if( WIN32 )
     set(OptiX_INSTALL_DIR "${CMAKE_SOURCE_DIR}/ext_win64/optix" CACHE PATH "Path to OptiX installed location.")
 else()
-    set(OptiX_INSTALL_DIR "${CMAKE_SOURCE_DIR}/ext/optix" CACHE PATH "Path to OptiX installed location.")
+    set(OptiX_INSTALL_DIR "/usr/local/NVIDIA-OptiX-SDK-7.1.0-linux64-x86_64" CACHE PATH "Path to OptiX installed location.")
 endif()
 find_package(OptiX REQUIRED)
 
@@ -89,6 +90,7 @@ if( WIN32 )
         ${ENOKI_DIR}/lib
         ${PYTHON_ROOT}/libs
         ${OpenEXR_LIB_DIR}
+        #${PYBIND11_ROOT}/include
     )
 else()
     include_directories(
@@ -208,6 +210,8 @@ if( WIN32 )
     target_compile_options(psdr_cuda PRIVATE /O2 /wd4251)
     target_link_libraries(psdr_cuda PRIVATE ${PYPSDR_LIBRARIES} ${CUDA_LIBRARIES} ${OpenEXR_LIBRARIES})
 else()
+    #add_subdirectory(${PYBIND11_ROOT})
+    #pybind11_add_module(psdr_cuda ${PSDR_SOURCE_FILES})
     cuda_add_library(psdr_cuda MODULE ${PSDR_SOURCE_FILES})
     target_link_libraries(psdr_cuda ${PYPSDR_LIBRARIES} ${CUDA_LIBRARIES} ${OpenEXR_LIBRARIES})
 endif()
